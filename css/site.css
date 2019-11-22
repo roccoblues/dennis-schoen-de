@@ -1,0 +1,46 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.4em;
+  color: #222;
+  background: #fafafa;
+}
+
+a {
+  text-decoration: none;
+  color: #222;
+}
+a:hover {
+  color: #555;
+}
+
+a.link {
+  color: #A60121
+}
+
+div {
+  border-color: #c7c7c7;
+}
+
+ul {
+  padding-left: 0;
+}
+
+li {
+  margin-left: 1em;
+  padding-bottom: 0.5em;
+}
+
+.text-gray {
+  color: #555;
+}
+
+.text-right {
+  text-align: right;
+}
+
+p {
+  margin: 0.5em 0 0 0;
+}
+ table td {
+   padding: 0;
+ }
