@@ -3,35 +3,38 @@ package models
 import "html/template"
 
 type CV struct {
+	Contact struct {
+		Name     string
+		Title    string
+		Address  template.HTML
+		Phone    string
+		Email    string
+		Homepage string
+		Birthday string
+	}
 	Summary    []string
-	Experience []*WorkExperience
-	Languages  []*struct {
+	Experience []struct {
+		Title       string
+		StartDate   string `yaml:"startDate"`
+		EndDate     string `yaml:"endDate"`
+		Description template.HTML
+		Employer    struct {
+			Name     string
+			Location string
+			URL      template.URL
+		}
+	}
+	Languages []struct {
 		Language string
 		Level    string
 	}
-	Trainings []*Training
-}
-
-type WorkExperience struct {
-	Title       string
-	StartDate   string `yaml:"startDate"`
-	EndDate     string `yaml:"endDate"`
-	Employer    *Employer
-	Description template.HTML
-}
-
-type Training struct {
-	Title  string
-	Year   int
-	Issuer struct {
-		Name     string
-		URL      template.URL
-		Location string
+	Trainings []struct {
+		Title  string
+		Year   int
+		Issuer struct {
+			Name     string
+			URL      template.URL
+			Location string
+		}
 	}
-}
-
-type Employer struct {
-	Name     string
-	Location string
-	URL      template.URL
 }

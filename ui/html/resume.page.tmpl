@@ -1,29 +1,30 @@
 {{template "base" .}}
 
-{{define "title"}}Dennis Schön{{end}}
-{{define "description"}}Personal homepage of Dennis Schön{{end}}
-{{define "url"}}https://www.dennis-schoen.de{{end}}
+{{define "title"}}Dennis Schön - Resume{{end}}
+{{define "description"}}Resume of Dennis Schön - Senior Software Engineer{{end}}
+{{define "url"}}https://www.dennis-schoen.de/resue{{end}}
 
 {{define "body"}}
   {{with .CV}}
   <div class="md-flex border-bottom pb3">
+    {{with .Contact}}
     <div class="col-12 md-col-3 ">
       <img alt="profile photo of Dennis Schön" class="rounded mb2" width="150px" height="150px" src="/static/img/dennis.jpg">
     </div>
     <div>
-      <h1 class="mt0">Dennis Schön</h1>
-      <h3 class="mt0">Senior Software Engineer</h1>
+      <h1 class="mt0">{{.Name}}</h1>
+      <h3 class="mt0">{{.Title}}</h1>
     </div>
     <div class="ml-auto h5">
-      Else-Wex-Weg 18<br>
-      21335 Lüneburg<br>
+      {{.Address}}
+      <br><br>
+      {{.Phone}}<br>
+      {{.Email}}<br>
+      {{.Homepage}}<br>
       <br>
-      +49 1577 5734377<br>
-      mail@dennis-schoen.de<br>
-      www.dennis-schoen.de<br>
-      <br>
-      Date of birth: Feb 17, 1980
+      Date of birth: {{.Birthday}}
     </div>
+    {{end}}
   </div>
   <div class="md-flex border-bottom py3">
     <div class="col-12 md-col-3 caps bold mb2">

@@ -1,3 +1,14 @@
+contact:
+  name: Dennis Schön
+  title: Senior Software Engineer
+  address: |
+    Else-Wex-Weg 18<br>
+    21335 Lüneburg
+  phone: +49 1577 5734377
+  email: mail@dennis-schoen.de
+  homepage: www.dennis-schoen.de
+  birthday: Feb 17, 1980
+
 summary:
   - Over 15 Years Experience in developing high-performance web applications.
   - Extensive Knowledge in Scaling and Optimizing a business networking site to handle over 15 million users that generate 25 million dynamic page impressions per day.
