@@ -3,9 +3,12 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+
+	"github.com/roccoblues/dennis-schoen.de/pkg/models"
 )
 
 type templateData struct {
+	CV *models.CV
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {

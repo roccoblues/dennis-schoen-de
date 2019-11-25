@@ -25,9 +25,13 @@ ul {
   padding-left: 0;
 }
 
-li {
+ul li {
   margin-left: 1em;
   padding-bottom: 0.5em;
+}
+
+ul li:last-child {
+  padding-bottom: 0;
 }
 
 .text-gray {
