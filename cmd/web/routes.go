@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/bmizerany/pat"
+	"github.com/markbates/pkger"
 )
 
 func (app *application) routes() http.Handler {
@@ -11,7 +12,7 @@ func (app *application) routes() http.Handler {
 	mux.Get("/", http.HandlerFunc(app.home))
 	mux.Get("/resume", http.HandlerFunc(app.resume))
 
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	fileServer := http.FileServer(pkger.Dir("/ui/static/"))
 	mux.Get("/static/", http.StripPrefix("/static", fileServer))
 
 	return app.recoverPanic(app.logRequest(secureHeaders(mux)))
