@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,6 +13,8 @@ import (
 	"github.com/roccoblues/dennis-schoen.de/pkg/models/yml"
 )
 
+var version string
+
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
@@ -20,9 +23,18 @@ type application struct {
 }
 
 func main() {
-	addr := flag.String("addr", ":80", "HTTP network address")
-	cvPath := flag.String("cv", "resume.yaml", "path to resume in YAML format")
-	flag.Parse()
+	fs := flag.NewFlagSet("web", flag.ExitOnError)
+	var (
+		addr        = fs.String("addr", ":80", "HTTP network address")
+		cvPath      = fs.String("cv", "resume.yaml", "path to resume in YAML format")
+		versionFlag = fs.Bool("version", false, "print version information and exit")
+	)
+	fs.Parse(os.Args[1:])
+
+	if *versionFlag {
+		fmt.Fprintf(os.Stdout, "Current build version %s\n", version)
+		os.Exit(0)
+	}
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
