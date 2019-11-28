@@ -5,7 +5,7 @@ GOTIDY=$(GOCMD) mod tidy
 BINARY_NAME=web
 
 .PHONY: all
-all: tidy test pkged.go build
+all: tidy test build
 
 GIT_COMMIT := $(shell git rev-list -1 HEAD)
 BUILD_ARGS=-ldflags "-X main.version=$(GIT_COMMIT)"
@@ -23,7 +23,7 @@ pkged.go:
 
 .PHONY: clean
 clean:
-	rm -f $(BINARY_NAME) pkged.go
+	rm -f $(BINARY_NAME)
 
 .PHONY: tidy
 tidy:

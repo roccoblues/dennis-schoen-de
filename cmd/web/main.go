@@ -9,7 +9,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/markbates/pkger"
 	"github.com/roccoblues/dennis-schoen.de/pkg/models"
 	"github.com/roccoblues/dennis-schoen.de/pkg/models/yml"
 )
@@ -49,8 +48,7 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	pkger.Include("/ui/html/")
-	templateCache, err := newTemplateCache("/ui/html/")
+	templateCache, err := newTemplateCache("./ui/html/")
 	if err != nil {
 		errorLog.Fatal(err)
 	}
