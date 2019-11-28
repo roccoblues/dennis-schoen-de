@@ -6,14 +6,14 @@
 
 {{define "body"}}
   {{with .CV}}
-  <div class="md-flex border-bottom pb3">
+  <div class="md-flex border-bottom py3">
     {{with .Contact}}
     <div class="col-12 md-col-3 ">
-      <img alt="profile photo of Dennis Schön" class="rounded mb2" width="150px" height="150px" src="/static/img/dennis.jpg">
+      <img alt="profile photo of Dennis Schön" class="rounded mb2" width="150" height="150" src="/static/img/dennis.jpg">
     </div>
     <div>
       <h1 class="mt0">{{.Name}}</h1>
-      <h3 class="mt0">{{.Title}}</h1>
+      <h3 class="mt0">{{.Title}}</h3>
     </div>
     <div class="ml-auto h5">
       {{.Address}}
@@ -32,7 +32,7 @@
     </div>
     <div class="col-12 md-col-9">
       <ul class="my0">
-        {{range .Summary}}
+        {{- range .Summary }}
         <li>{{.}}</li>
         {{- end}}
       </ul>
@@ -43,7 +43,7 @@
       Experience
     </div>
     <div class="col-12 md-col-9">
-      {{range $i, $e := .Experience}}
+      {{- range $i, $e := .Experience -}}
         {{with $e}}
         <div class="md-flex {{if ne $i 0}}mt3{{end}}">
           <div class="col-12 md-col-8 bold">{{.Title}}</div>
@@ -60,7 +60,7 @@
           {{.Description}}
         </p>
         {{end}}
-      {{end}}
+      {{- end}}
     </div>
   </div>
   <div class="md-flex border-bottom py3">
@@ -70,15 +70,15 @@
       TRAINING
     </div>
     <div class="col-12 md-col-9">
-      {{range $i, $t := .Trainings}}
+      {{- range $i, $t := .Trainings -}}
       {{with $t}}
       <div class="flex {{if ne $i 0}}mt2{{end}}">
         <div class="col col-8 bold">{{.Title}}</div>
         <div class="col col-4 bold text-right">{{.Year}}</div>
       </div>
-      <a href="{{.Issuer.URL}}" target="_blank">{{.Issuer.Name}}</a>{{with .Issuer.Location}}, {{.}}{{end}}</span>
+      <a href="{{.Issuer.URL}}" target="_blank">{{.Issuer.Name}}</a>{{with .Issuer.Location}}, {{.}}{{end}}
       {{end}}
-      {{end}}
+      {{- end}}
     </div>
   </div>
   <div class="md-flex border-bottom py3">
@@ -87,13 +87,14 @@
     </div>
     <div class="col-12 md-col-9">
       <table>
-        {{range .Languages}}
+        {{- range .Languages}}
         <tr>
           <td><strong>{{.Language}}:</strong></td>
           <td>{{.Level}}</td>
         </tr>
-        {{end}}
+        {{- end}}
       </table>
+    </div>
   </div>
   {{end}}
 {{end}}
