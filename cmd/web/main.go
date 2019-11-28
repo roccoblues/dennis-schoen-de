@@ -1,10 +1,12 @@
 package main
 
 import (
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"html/template"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"time"
@@ -25,7 +27,10 @@ type application struct {
 func main() {
 	fs := flag.NewFlagSet("web", flag.ExitOnError)
 	var (
-		addr        = fs.String("addr", ":80", "HTTP network address")
+		sslCert     = flag.String("ssl-cert", "./tls/localhost.pem", "SSL Certificate")
+		sslKey      = flag.String("ssl-key", "./tls/localhost-key.pem", "SSL Key")
+		httpsAddr   = fs.String("https-addr", ":443", "HTTPS network address")
+		httpAddr    = fs.String("http-addr", ":80", "HTTP network address")
 		cvPath      = fs.String("cv", "resume.yaml", "path to resume in YAML format")
 		versionFlag = fs.Bool("version", false, "print version information and exit")
 	)
@@ -60,16 +65,40 @@ func main() {
 		cv:            cv,
 	}
 
-	infoLog.Printf("Starting server on %s", *addr)
+	tlsConfig := &tls.Config{
+		PreferServerCipherSuites: true,
+	}
+
+	go func() {
+		_, tlsPort, err := net.SplitHostPort(*httpsAddr)
+		if err != nil {
+			errorLog.Fatal(err)
+		}
+		infoLog.Printf("Starting http server on %s", *httpAddr)
+		httpSrv := http.Server{
+			Addr:         *httpAddr,
+			Handler:      app.recoverPanic(app.logRequest(app.httpsRedirect(tlsPort))),
+			ErrorLog:     errorLog,
+			IdleTimeout:  time.Minute,
+			ReadTimeout:  5 * time.Second,
+			WriteTimeout: 10 * time.Second,
+		}
+		if err := httpSrv.ListenAndServe(); err != nil {
+			errorLog.Fatal(err)
+		}
+	}()
+
+	infoLog.Printf("Starting https server on %s", *httpsAddr)
 	srv := http.Server{
-		Addr:         *addr,
+		Addr:         *httpsAddr,
 		Handler:      app.routes(),
 		ErrorLog:     errorLog,
+		TLSConfig:    tlsConfig,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	if err := srv.ListenAndServe(); err != nil {
+	if err := srv.ListenAndServeTLS(*sslCert, *sslKey); err != nil {
 		errorLog.Fatal(err)
 	}
 }
