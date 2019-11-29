@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"flag"
 	"fmt"
@@ -9,8 +10,10 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
 	"time"
 
+	"github.com/oklog/run"
 	"github.com/roccoblues/dennis-schoen.de/pkg/models"
 	"github.com/roccoblues/dennis-schoen.de/pkg/models/yml"
 )
@@ -65,40 +68,73 @@ func main() {
 		cv:            cv,
 	}
 
-	tlsConfig := &tls.Config{
-		PreferServerCipherSuites: true,
-	}
-
-	go func() {
-		_, tlsPort, err := net.SplitHostPort(*httpsAddr)
-		if err != nil {
-			errorLog.Fatal(err)
-		}
-		infoLog.Printf("Starting http server on %s", *httpAddr)
-		httpSrv := http.Server{
-			Addr:         *httpAddr,
-			Handler:      app.recoverPanic(app.logRequest(app.httpsRedirect(tlsPort))),
-			ErrorLog:     errorLog,
-			IdleTimeout:  time.Minute,
-			ReadTimeout:  5 * time.Second,
-			WriteTimeout: 10 * time.Second,
-		}
-		if err := httpSrv.ListenAndServe(); err != nil {
-			errorLog.Fatal(err)
-		}
-	}()
-
-	infoLog.Printf("Starting https server on %s", *httpsAddr)
-	srv := http.Server{
-		Addr:         *httpsAddr,
-		Handler:      app.routes(),
-		ErrorLog:     errorLog,
-		TLSConfig:    tlsConfig,
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-	}
-	if err := srv.ListenAndServeTLS(*sslCert, *sslKey); err != nil {
+	_, tlsPort, err := net.SplitHostPort(*httpsAddr)
+	if err != nil {
 		errorLog.Fatal(err)
 	}
+
+	var g run.Group
+	{
+		{
+			infoLog.Printf("Starting HTTPS server on %s", *httpsAddr)
+			server := http.Server{
+				Addr:     *httpsAddr,
+				Handler:  app.routes(),
+				ErrorLog: errorLog,
+				TLSConfig: &tls.Config{
+					PreferServerCipherSuites: true,
+				},
+				IdleTimeout:  time.Minute,
+				ReadTimeout:  5 * time.Second,
+				WriteTimeout: 10 * time.Second,
+			}
+			g.Add(func() error {
+				return server.ListenAndServeTLS(*sslCert, *sslKey)
+			}, func(error) {
+				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+				defer cancel()
+				infoLog.Printf("Shutting down HTTPS server")
+				server.Shutdown(ctx)
+			})
+		}
+		{
+			infoLog.Printf("Starting HTTP server on %s", *httpAddr)
+			server := http.Server{
+				Addr:         *httpAddr,
+				Handler:      app.recoverPanic(app.logRequest(app.httpsRedirect(tlsPort))),
+				ErrorLog:     errorLog,
+				IdleTimeout:  time.Minute,
+				ReadTimeout:  5 * time.Second,
+				WriteTimeout: 10 * time.Second,
+			}
+			g.Add(func() error {
+				return server.ListenAndServe()
+			}, func(error) {
+				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+				defer cancel()
+				infoLog.Printf("Shutting down HTTP server")
+				server.Shutdown(ctx)
+			})
+		}
+		{
+			// Catch ctrl-C
+			var (
+				ctx, cancel = context.WithCancel(context.Background())
+				sigchan     = make(chan os.Signal, 1)
+			)
+			signal.Notify(sigchan, os.Interrupt)
+			g.Add(func() error {
+				select {
+				case <-ctx.Done():
+					return ctx.Err()
+				case sig := <-sigchan:
+					return fmt.Errorf("received signal %s", sig)
+				}
+			}, func(error) {
+				cancel()
+			})
+		}
+	}
+
+	infoLog.Printf("Exit with: %s", g.Run())
 }
