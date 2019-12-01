@@ -1,22 +1,25 @@
 package models
 
-import "html/template"
+import (
+	"html/template"
+)
 
 type CV struct {
-	Contact struct {
-		Name     string
-		Title    string
-		Address  template.HTML
-		Phone    string
-		Email    string
-		Homepage string
-		Birthday string
+	Name    string
+	Title   string
+	Address struct {
+		Street string
+		Place  string
 	}
+	Phone      string
+	Email      string
+	Homepage   string
+	Birthday   string
 	Summary    []string
 	Experience []struct {
 		Title       string
-		StartDate   string `yaml:"startDate"`
-		EndDate     string `yaml:"endDate"`
+		StartDate   string
+		EndDate     string
 		Description template.HTML
 		Employer    struct {
 			Name     string

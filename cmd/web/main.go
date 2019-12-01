@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -13,9 +14,9 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/hashicorp/hcl"
 	"github.com/oklog/run"
 	"github.com/roccoblues/dennis-schoen.de/pkg/models"
-	"github.com/roccoblues/dennis-schoen.de/pkg/models/yml"
 )
 
 var version string
@@ -34,7 +35,7 @@ func main() {
 		sslKey      = flag.String("ssl-key", "./tls/localhost-key.pem", "SSL Key")
 		httpsAddr   = fs.String("https-addr", ":443", "HTTPS network address")
 		httpAddr    = fs.String("http-addr", ":80", "HTTP network address")
-		cvPath      = fs.String("cv", "resume.yaml", "path to resume in YAML format")
+		cvPath      = fs.String("cv", "resume.conf", "path to resume in HCL format")
 		versionFlag = fs.Bool("version", false, "print version information and exit")
 	)
 	fs.Parse(os.Args[1:])
@@ -47,13 +48,16 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	file, err := os.Open(*cvPath)
-	if err != nil {
-		errorLog.Fatal(err)
-	}
-	cv, err := yml.LoadCV(file)
-	if err != nil {
-		errorLog.Fatal(err)
+	var cv *models.CV
+	{
+		hclCV, err := ioutil.ReadFile(*cvPath)
+		if err != nil {
+			errorLog.Fatal(err)
+		}
+		cv = &models.CV{}
+		if err = hcl.Unmarshal(hclCV, &cv); err != nil {
+			errorLog.Fatal(err)
+		}
 	}
 
 	templateCache, err := newTemplateCache("./ui/html/")

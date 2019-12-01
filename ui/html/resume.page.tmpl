@@ -1,13 +1,12 @@
 {{template "base" .}}
 
-{{define "title"}}Dennis Schön - Resume{{end}}
-{{define "description"}}Resume of Dennis Schön - Senior Software Engineer{{end}}
+{{define "title"}}{{.CV.Name}} - Resume{{end}}
+{{define "description"}}Resume of {{.CV.Name}} - {{.CV.Title}}{{end}}
 {{define "url"}}https://www.dennis-schoen.de/resume{{end}}
 
 {{define "body"}}
   {{with .CV}}
   <div class="md-flex border-bottom py3">
-    {{with .Contact}}
     <div class="col-12 md-col-3 ">
       <img alt="profile photo of Dennis Schön" class="rounded mb2" width="150" height="150" src="/static/img/dennis.jpg">
     </div>
@@ -16,7 +15,8 @@
       <h3 class="mt0">{{.Title}}</h3>
     </div>
     <div class="ml-auto h5">
-      {{.Address}}
+      {{.Address.Street}}<br>
+      {{.Address.Place}}
       <br><br>
       {{.Phone}}<br>
       {{.Email}}<br>
@@ -24,7 +24,6 @@
       <br>
       Date of birth: {{.Birthday}}
     </div>
-    {{end}}
   </div>
   <div class="md-flex border-bottom py3">
     <div class="col-12 md-col-3 caps bold mb2">
