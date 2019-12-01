@@ -14,6 +14,11 @@ BUILD_ARGS=-ldflags "-X main.version=$(GIT_COMMIT)"
 build:
 	$(GOBUILD) $(BUILD_ARGS) -o $(BINARY_NAME) -v cmd/web/*
 
+# Cross compilation
+.PHONY: build-linux
+build-linux:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) $(BUILD_ARGS) -o  $(BINARY_NAME)_unix -v cmd/web/*
+
 .PHONY: test
 test:
 	$(GOTEST) -v -race ./...
