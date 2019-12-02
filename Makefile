@@ -3,6 +3,7 @@ GOBUILD=$(GOCMD) build
 GOTEST=$(GOCMD) test
 GOTIDY=$(GOCMD) mod tidy
 BINARY_NAME=web
+DEPLOY_TARGET=ds:dennis-schoen-de/
 
 .PHONY: all
 all: tidy test build
@@ -33,3 +34,7 @@ clean:
 .PHONY: tidy
 tidy:
 	$(GOTIDY)
+
+.PHONE: deploy
+deploy:
+	rsync -r web_unix ui resume.conf $(DEPLOY_TARGET)
