@@ -31,8 +31,8 @@ type application struct {
 func main() {
 	fs := flag.NewFlagSet("web", flag.ExitOnError)
 	var (
-		sslCert     = flag.String("ssl-cert", "./tls/cert.pem", "SSL Certificate")
-		sslKey      = flag.String("ssl-key", "./tls/key.pem", "SSL Key")
+		sslCert     = fs.String("ssl-cert", "", "SSL Certificate")
+		sslKey      = fs.String("ssl-key", "", "SSL Key")
 		httpsAddr   = fs.String("https-addr", ":443", "HTTPS network address")
 		httpAddr    = fs.String("http-addr", ":80", "HTTP network address")
 		cvPath      = fs.String("cv", "resume.conf", "path to resume in HCL format")
