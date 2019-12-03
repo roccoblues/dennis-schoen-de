@@ -60,6 +60,12 @@ func TestRedirectHostName(t *testing.T) {
 			wantStatus: http.StatusOK,
 		},
 		{
+			name:       "same host and hostname; with path; https",
+			url:        "https://www.test.com/foo/edit",
+			hostName:   "www.test.com",
+			wantStatus: http.StatusOK,
+		},
+		{
 			name:         "different host and hostname",
 			url:          "http://www.foo.com",
 			hostName:     "www.test.com",
@@ -74,22 +80,32 @@ func TestRedirectHostName(t *testing.T) {
 			wantLocation: "http://www.test.com:4000",
 		},
 		{
+			name:         "different host and hostname; non-standard port; https",
+			url:          "https://www.foo.com:4000",
+			hostName:     "www.test.com",
+			wantStatus:   http.StatusMovedPermanently,
+			wantLocation: "https://www.test.com:4000",
+		},
+		{
 			name:         "different host and hostname; with path",
 			url:          "http://www.foo.com/foo/edit",
 			hostName:     "www.test.com",
 			wantStatus:   http.StatusMovedPermanently,
 			wantLocation: "http://www.test.com/foo/edit",
 		},
+		{
+			name:         "different host and hostname; with path; https",
+			url:          "https://www.foo.com/foo/edit",
+			hostName:     "www.test.com",
+			wantStatus:   http.StatusMovedPermanently,
+			wantLocation: "https://www.test.com/foo/edit",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			rr := httptest.NewRecorder()
-
-			r, err := http.NewRequest(http.MethodGet, tt.url, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
+			r := httptest.NewRequest(http.MethodGet, tt.url, nil)
 
 			app := &application{
 				errorLog: log.New(ioutil.Discard, "", 0),
