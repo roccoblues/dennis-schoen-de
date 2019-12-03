@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 
 	"net/http"
 )
@@ -33,5 +34,36 @@ func (app *application) logRequest(next http.HandlerFunc) http.HandlerFunc {
 		app.infoLog.Printf("%s - %s %s %s", r.RemoteAddr, r.Proto, r.Method, r.URL.RequestURI())
 
 		next(w, r)
+	}
+}
+
+func (app *application) redirectHostName(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if app.hostName == "" || stripPort(r.Host) == app.hostName {
+			next(w, r)
+			return
+		}
+
+		port := portOnly(r.Host)
+
+		u := r.URL
+		if r.TLS != nil {
+			u.Scheme = "https"
+			if port == "" {
+				port = "443"
+			}
+		} else {
+			u.Scheme = "http"
+			if port == "" {
+				port = "80"
+			}
+		}
+		if port == "80" || port == "443" {
+			u.Host = app.hostName
+		} else {
+			u.Host = net.JoinHostPort(app.hostName, port)
+		}
+
+		http.Redirect(w, r, u.String(), http.StatusMovedPermanently)
 	}
 }

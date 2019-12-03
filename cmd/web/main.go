@@ -25,6 +25,7 @@ type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
 	cv            *models.CV
+	hostName      string
 	templateCache map[string]*template.Template
 }
 
@@ -36,6 +37,7 @@ func main() {
 		sslKey      = fs.String("ssl-key", "", "SSL Key")
 		httpsAddr   = fs.String("https-addr", ":443", "HTTPS network address")
 		httpAddr    = fs.String("http-addr", ":80", "HTTP network address")
+		hostName    = fs.String("hostname", "", "redirect unknown host requests to hostname (optional)")
 		cvPath      = fs.String("cv", "resume.conf", "path to resume in HCL format")
 		versionFlag = fs.Bool("version", false, "print version information and exit")
 	)
@@ -80,6 +82,7 @@ func main() {
 		infoLog:       infoLog,
 		templateCache: templateCache,
 		cv:            cv,
+		hostName:      *hostName,
 	}
 
 	_, tlsPort, err := net.SplitHostPort(*httpsAddr)
@@ -115,7 +118,7 @@ func main() {
 			infoLog.Printf("Starting HTTP server on %s", *httpAddr)
 			var httpHandler http.Handler
 			if *sslFlag {
-				// HTTP requests redirect to HTTPS if SSL is enabled
+				// redirect HTTP requests to HTTPS if SSL is enabled
 				httpHandler = app.recoverPanic(app.logRequest(app.httpsRedirect(tlsPort)))
 			} else {
 				httpHandler = app.routes()

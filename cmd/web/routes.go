@@ -16,5 +16,5 @@ func (app *application) routes() http.Handler {
 }
 
 func (app *application) defaultMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return app.recoverPanic(app.logRequest(secureHeaders(next)))
+	return app.recoverPanic(app.logRequest(secureHeaders(app.redirectHostName(next))))
 }
