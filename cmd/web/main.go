@@ -31,6 +31,7 @@ type application struct {
 func main() {
 	fs := flag.NewFlagSet("web", flag.ExitOnError)
 	var (
+		sslFlag     = fs.Bool("ssl", false, "enable HTTPS, requires --ssl-cert and --ssl-key, HTTP requests will be redirected")
 		sslCert     = fs.String("ssl-cert", "", "SSL Certificate")
 		sslKey      = fs.String("ssl-key", "", "SSL Key")
 		httpsAddr   = fs.String("https-addr", ":443", "HTTPS network address")
@@ -47,6 +48,15 @@ func main() {
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	if *sslFlag {
+		if *sslCert == "" {
+			errorLog.Fatal("--ssl-cert is required")
+		}
+		if *sslKey == "" {
+			errorLog.Fatal("--ssl-key is required")
+		}
+	}
 
 	var cv *models.CV
 	{
@@ -79,7 +89,7 @@ func main() {
 
 	var g run.Group
 	{
-		{
+		if *sslFlag {
 			infoLog.Printf("Starting HTTPS server on %s", *httpsAddr)
 			server := http.Server{
 				Addr:     *httpsAddr,
@@ -103,9 +113,16 @@ func main() {
 		}
 		{
 			infoLog.Printf("Starting HTTP server on %s", *httpAddr)
+			var httpHandler http.Handler
+			if *sslFlag {
+				// HTTP requests redirect to HTTPS if SSL is enabled
+				httpHandler = app.recoverPanic(app.logRequest(app.httpsRedirect(tlsPort)))
+			} else {
+				httpHandler = app.routes()
+			}
 			server := http.Server{
 				Addr:         *httpAddr,
-				Handler:      app.recoverPanic(app.logRequest(app.httpsRedirect(tlsPort))),
+				Handler:      httpHandler,
 				ErrorLog:     errorLog,
 				IdleTimeout:  time.Minute,
 				ReadTimeout:  5 * time.Second,
