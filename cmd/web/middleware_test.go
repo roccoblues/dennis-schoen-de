@@ -2,7 +2,6 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -107,11 +106,8 @@ func TestRedirectHostName(t *testing.T) {
 			rr := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, tt.url, nil)
 
-			app := &application{
-				errorLog: log.New(ioutil.Discard, "", 0),
-				infoLog:  log.New(ioutil.Discard, "", 0),
-				hostName: tt.hostName,
-			}
+			app := newTestApplication(t)
+			app.hostName = tt.hostName
 
 			next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte("OK"))

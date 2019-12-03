@@ -1,10 +1,9 @@
 package main
 
 import (
-	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -96,11 +95,8 @@ func TestHttpsRedirect(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			app := &application{
-				errorLog: log.New(ioutil.Discard, "", 0),
-				infoLog:  log.New(ioutil.Discard, "", 0),
-				hostName: tt.hostName,
-			}
+			app := newTestApplication(t)
+			app.hostName = tt.hostName
 
 			app.httpsRedirect(tt.tlsPort)(rr, r)
 
@@ -115,5 +111,53 @@ func TestHttpsRedirect(t *testing.T) {
 				t.Errorf("want %q; got %q", tt.wantLocation, location)
 			}
 		})
+	}
+}
+
+func TestHome(t *testing.T) {
+	app := newTestApplication(t)
+	ts := newTestServer(t, app.routes())
+	defer ts.Close()
+
+	code, _, body := ts.get(t, "/")
+
+	if code != http.StatusOK {
+		t.Errorf("want %d; got %d", http.StatusOK, code)
+	}
+
+	if !strings.Contains(string(body), "my name is Dennis") {
+		t.Errorf("want body to contain %q", "my name is Dennis")
+	}
+}
+
+func TestResume(t *testing.T) {
+	app := newTestApplication(t)
+	ts := newTestServer(t, app.routes())
+	defer ts.Close()
+
+	code, _, body := ts.get(t, "/resume")
+
+	if code != http.StatusOK {
+		t.Errorf("want %d; got %d", http.StatusOK, code)
+	}
+
+	if !strings.Contains(string(body), "Awesome Job Title") {
+		t.Errorf("want body to contain %q", "Awesome Job Title")
+	}
+}
+
+func TestNotFound(t *testing.T) {
+	app := newTestApplication(t)
+	ts := newTestServer(t, app.routes())
+	defer ts.Close()
+
+	code, _, body := ts.get(t, "/foo/bar")
+
+	if code != http.StatusNotFound {
+		t.Errorf("want %d; got %d", http.StatusNotFound, code)
+	}
+
+	if !strings.Contains(string(body), "Not Found") {
+		t.Errorf("want body to contain %q", "Not Found")
 	}
 }
