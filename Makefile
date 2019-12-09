@@ -25,9 +25,6 @@ build-linux:
 test:
 	$(GOTEST) -v -race ./...
 
-pkged.go:
-	pkger
-
 .PHONY: clean
 clean:
 	rm -f $(BINARY_NAME)
