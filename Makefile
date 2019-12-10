@@ -7,7 +7,7 @@ DEPLOY_ASSETS=web_unix ui resume.conf
 DEPLOY_TARGET=www.dennis-schoen.de:dennis-schoen-de/
 
 .PHONY: all
-all: tidy test build
+all: tidy build
 
 GIT_COMMIT := $(shell git rev-list -1 HEAD)
 BUILD_ARGS=-ldflags "-X main.version=$(GIT_COMMIT)"
