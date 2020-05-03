@@ -11,7 +11,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"os/signal"
 	"time"
 
 	"github.com/hashicorp/hcl"
@@ -142,21 +141,7 @@ func main() {
 		}
 		{
 			// Catch ctrl-C
-			var (
-				ctx, cancel = context.WithCancel(context.Background())
-				sigchan     = make(chan os.Signal, 1)
-			)
-			signal.Notify(sigchan, os.Interrupt)
-			g.Add(func() error {
-				select {
-				case <-ctx.Done():
-					return ctx.Err()
-				case sig := <-sigchan:
-					return fmt.Errorf("received signal %s", sig)
-				}
-			}, func(error) {
-				cancel()
-			})
+			g.Add(run.SignalHandler(context.Background(), os.Interrupt))
 		}
 	}
 
