@@ -30,7 +30,7 @@ test:
 .PHONY: clean
 ## clean: cleans the binary
 clean:
-	rm -f ${BINARY_NAME}
+	rm -f ${BINARY_NAME} ${BINARY_NAME}_unix
 
 .PHONY: tidy
 ## tidy: tidy go modules
