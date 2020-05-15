@@ -97,8 +97,9 @@ func TestHttpsRedirect(t *testing.T) {
 
 			app := newTestApplication(t)
 			app.hostName = tt.hostName
+			app.tlsPort = tt.tlsPort
 
-			app.httpsRedirect(tt.tlsPort)(rr, r)
+			app.httpsRedirect(rr, r)
 
 			rs := rr.Result()
 

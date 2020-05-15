@@ -28,28 +28,26 @@ func (app *application) resume(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "resume.page.tmpl", &templateData{CV: app.cv})
 }
 
-func (app *application) httpsRedirect(tlsPort string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		host := app.hostName // default to the configured hostname
-		if host == "" {      // try to get the hostname from request
-			host = stripPort(r.Host)
-		}
-		if host == "" {
-			// without a hostname we can't build a redirect
-			app.serverError(w, fmt.Errorf("request host missing"))
-			return
-		}
-
-		u := r.URL
-		if tlsPort != "443" {
-			u.Host = net.JoinHostPort(host, tlsPort)
-		} else {
-			u.Host = host
-		}
-		u.Scheme = "https"
-
-		http.Redirect(w, r, u.String(), http.StatusMovedPermanently)
+func (app *application) httpsRedirect(w http.ResponseWriter, r *http.Request) {
+	host := app.hostName // default to the configured hostname
+	if host == "" {      // try to get the hostname from request
+		host = stripPort(r.Host)
 	}
+	if host == "" {
+		// without a hostname we can't build a redirect
+		app.serverError(w, fmt.Errorf("request host missing"))
+		return
+	}
+
+	u := r.URL
+	if app.tlsPort != "443" {
+		u.Host = net.JoinHostPort(host, app.tlsPort)
+	} else {
+		u.Host = host
+	}
+	u.Scheme = "https"
+
+	http.Redirect(w, r, u.String(), http.StatusMovedPermanently)
 }
 
 func (app *application) redirectFun(w http.ResponseWriter, r *http.Request) {

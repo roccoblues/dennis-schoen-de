@@ -26,6 +26,7 @@ type application struct {
 	cv            *models.CV
 	hostName      string
 	templateCache map[string]*template.Template
+	tlsPort       string
 }
 
 func main() {
@@ -76,17 +77,18 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	_, tlsPort, err := net.SplitHostPort(*httpsAddr)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		templateCache: templateCache,
 		cv:            cv,
 		hostName:      *hostName,
-	}
-
-	_, tlsPort, err := net.SplitHostPort(*httpsAddr)
-	if err != nil {
-		errorLog.Fatal(err)
+		tlsPort:       tlsPort,
 	}
 
 	var g run.Group
@@ -118,7 +120,7 @@ func main() {
 			var httpHandler http.Handler
 			if *sslFlag {
 				// redirect HTTP requests to HTTPS if SSL is enabled
-				httpHandler = app.recoverPanic(app.logRequest(app.httpsRedirect(tlsPort)))
+				httpHandler = app.recoverPanic(app.logRequest(app.httpsRedirect))
 			} else {
 				httpHandler = app.routes()
 			}
