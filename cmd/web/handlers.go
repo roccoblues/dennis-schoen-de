@@ -51,3 +51,7 @@ func (app *application) httpsRedirect(tlsPort string) http.HandlerFunc {
 		http.Redirect(w, r, u.String(), http.StatusMovedPermanently)
 	}
 }
+
+func (app *application) redirectFun(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "https://youtube.com/watch?v=dQw4w9WgXcQ", http.StatusMovedPermanently)
+}
