@@ -109,7 +109,7 @@ func main() {
 			}, func(error) {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 				defer cancel()
-				infoLog.Printf("Shutting down HTTPS server")
+				infoLog.Print("Shutting down HTTPS server")
 				server.Shutdown(ctx)
 			})
 		}
@@ -135,7 +135,7 @@ func main() {
 			}, func(error) {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 				defer cancel()
-				infoLog.Printf("Shutting down HTTP server")
+				infoLog.Print("Shutting down HTTP server")
 				server.Shutdown(ctx)
 			})
 		}
@@ -145,5 +145,5 @@ func main() {
 		}
 	}
 
-	infoLog.Printf("Exit with: %s", g.Run())
+	infoLog.Printf("Exited with: %s", g.Run())
 }
