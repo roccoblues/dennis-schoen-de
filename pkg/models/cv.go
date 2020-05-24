@@ -21,6 +21,7 @@ type CV struct {
 		StartDate   string
 		EndDate     string
 		Description template.HTML
+		Technology  []string
 		Employer    struct {
 			Name     string
 			Location string

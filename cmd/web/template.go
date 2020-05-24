@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+	"strings"
 
 	"github.com/roccoblues/dennis-schoen.de/pkg/models"
 )
@@ -21,7 +22,9 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 
 	for _, page := range pages {
 		name := filepath.Base(page)
-		ts, err := template.ParseFiles(page)
+		ts, err := template.New(name).Funcs(template.FuncMap{
+			"StringsJoin": strings.Join,
+		}).ParseFiles(page)
 		if err != nil {
 			return nil, err
 		}
