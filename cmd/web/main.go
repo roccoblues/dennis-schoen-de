@@ -13,9 +13,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/hashicorp/hcl"
 	"github.com/oklog/run"
 	"github.com/roccoblues/dennis-schoen.de/pkg/models"
+	"gopkg.in/yaml.v2"
 )
 
 var version string
@@ -38,7 +38,7 @@ func main() {
 		httpsAddr   = fs.String("https-addr", ":443", "HTTPS network address")
 		httpAddr    = fs.String("http-addr", ":80", "HTTP network address")
 		hostName    = fs.String("hostname", "", "redirect unknown host requests to hostname (optional)")
-		cvPath      = fs.String("cv", "resume.conf", "path to resume in HCL format")
+		cvPath      = fs.String("cv", "resume.yaml", "path to resume")
 		versionFlag = fs.Bool("version", false, "print version information and exit")
 	)
 	fs.Parse(os.Args[1:])
@@ -60,14 +60,13 @@ func main() {
 		}
 	}
 
-	var cv *models.CV
+	cv := &models.CV{}
 	{
-		hclCV, err := ioutil.ReadFile(*cvPath)
+		data, err := ioutil.ReadFile(*cvPath)
 		if err != nil {
 			errorLog.Fatal(err)
 		}
-		cv = &models.CV{}
-		if err = hcl.Unmarshal(hclCV, &cv); err != nil {
+		if err = yaml.Unmarshal(data, &cv); err != nil {
 			errorLog.Fatal(err)
 		}
 	}

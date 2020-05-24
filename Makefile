@@ -3,7 +3,7 @@ GOBUILD=$(GOCMD) build
 GOTEST=$(GOCMD) test
 GOTIDY=$(GOCMD) mod tidy
 BINARY_NAME=web
-DEPLOY_ASSETS=$(BINARY_NAME)_unix ui resume.conf
+DEPLOY_ASSETS=$(BINARY_NAME)_unix ui resume.yaml
 DEPLOY_TARGET=www.dennis-schoen.de:dennis-schoen-de/
 
 .PHONY: all

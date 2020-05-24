@@ -1,0 +1,125 @@
+name: Dennis Schön
+title: Senior Software Engineer
+
+summary:
+- Over 15 Years experience in developing high-performance web applications.
+- Extensive knowledge in scaling and optimizing a business networking site to handle
+  over 15 million users that generate 25 million dynamic page impressions per day.
+- Experience in leading engineering teams.
+
+experience:
+- title: Senior Software Engineer
+  startdate: Jan 2013
+  employer:
+    name: Freelance
+    location: Greater Hamburg area and remote
+  description: Tasks included bootstrapping new web applications, refactoring legacy
+    apps and APIs, designing microservice infrastucture and startup tech consulting.
+  technology:
+  - Go
+  - Ruby on Rails
+  - Python
+  - Kubernetes
+  - Docker
+  - Consul
+  - MySQL
+  - Elasticsearch
+  - Graylog
+  - '...'
+- title: Senior Software Engineer
+  startdate: Jan 2019
+  enddate: Feb 2020
+  employer:
+    name: Twenty Billion Neurons GmbH
+    url: https://20bn.com
+    location: Berlin (remote)
+  description: Full ownership of a web platform that collects large amounts of video
+    data used to train neural networks.
+  technology:
+  - Go
+  - Ruby on Rails
+  - Postgres
+  - AWS
+  - Terraform
+  - Ansible
+- title: Senior Software Engineer
+  startdate: Sep 2017
+  enddate: Jul 2018
+  employer:
+    name: Greenlight Software GmbH
+    url: https://www.greenlight-software.de
+    location: Lippstadt (remote)
+  description: Full ownership of a web platform that enables clients to run online
+    training courses for their staff.
+  technology:
+  - Ruby on Rails
+  - MySQL
+  - Grafana
+  - InfluxDB
+- title: Chief Technology Officer
+  startdate: Mar 2011
+  enddate: Sep 2012
+  employer:
+    name: loftville GmbH
+    location: Hamburg
+  description: Responsible for 5 Team Members (Frontend, Backend, Design). Tasks included
+    leading the development of the website, building and maintaining the tech infrastructure,
+    hiring and retention of talent, conflict management and budget planning.
+  technology:
+  - Ruby on Rails
+  - HAProxy
+  - Nginx
+  - unicorn
+  - MySQL
+  - Sphinx
+- title: Principal Software Architect
+  startdate: Feb 2009
+  enddate: Feb 2011
+  employer:
+    name: XING AG
+    url: https://www.xing.com
+    location: Hamburg
+  description: Worked on the XING core architecture. Responsibilities included architecture,
+    site performance, analyzing and solving problems in a complex multi-server (N
+    > 300) environment, code quality assurance, automated testing and Release Management.
+  technology:
+  - Ruby on  Rails
+  - Perl
+  - MySQL
+  - Redis
+  - RabbitMQ
+  - '...'
+- title: Software Engineer
+  startdate: Aug 2006
+  enddate: Jan 2009
+  employer:
+    name: epublica GmbH
+    url: https://www.epublica.de
+    location: Hamburg
+  description: Worked on the product for our largest client, XING. Restructured the
+    codebase to form a more Service Oriented Architecture; integrated asynchronous
+    and parallel processing with Gearman; developed techniques for database schema
+    changes on tables with 10s of millions of records without downtime; Responsible
+    for the concept and integration of 3 acquired social networks (econozco, Neurona,
+    cember.net) with a total of over 1.7 million users.
+
+trainings:
+- title: Gesprächsführung für Menschen in Schnittstellenpositionen
+  year: 2010
+  issuer:
+    name: oose Innovative Informatik eG
+    url: https://www.oose.de
+    location: Hamburg
+- title: RedHat Certified Engineer
+  year: 2002
+  issuer:
+    name: RedHat Europe
+    url: https://www.redhat.com
+
+languages:
+- language: German
+  level: First language
+- language: English
+  level: Fluent
+- language: Spanish
+  level: Elementary
