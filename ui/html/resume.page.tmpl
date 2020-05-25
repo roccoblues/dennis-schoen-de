@@ -44,11 +44,13 @@
         {{end}}
         <p class="h5">
           {{.Description}}
-          <br>
-          Technologies used:
-          <i>
-            {{StringsJoin .Technology ", " }}
-          </i>
+          {{if .Technology}}
+            <br>
+            Technologies used:
+            <i>
+              {{StringsJoin .Technology ", " }}
+            </i>
+          {{end}}
         </p>
         {{end}}
       {{- end}}
