@@ -1,3 +1,3 @@
-# dennis-schoen-de [![Build Status](https://github.com/roccoblues/dennis-schoen-de/workflows/Test/badge.svg)](https://github.com/roccoblues/dennis-schoen-de/actions)
+# dennis-schoen-de
 
-Just my homepage. 
+Just my homepage.
